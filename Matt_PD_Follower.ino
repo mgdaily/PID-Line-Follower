@@ -5,8 +5,7 @@
 #define EMITTER_PIN   2     // emitter is controlled by digital pin 2
 
 // sensors 0 through 7 are connected to digital pins 3 through 10, respectively
-QTRSensorsRC qtrrc((unsigned char[]) {3, 8, 9, 10, 11, 12},
-  NUM_SENSORS, TIMEOUT, EMITTER_PIN);
+QTRSensorsRC qtrrc((unsigned char[]) {3, 8, 9, 10, 11, 12}, NUM_SENSORS, TIMEOUT, EMITTER_PIN);
 unsigned int sensorValues[NUM_SENSORS];
 
 int E2 = 6; //M2 speed control
@@ -25,7 +24,7 @@ void setup()
   }
   digitalWrite(13, LOW);     // turn off Arduino's LED to indicate we are through with calibration
 
-  // print the calibration minimum values measured when emitters were on
+  // print the calibration minimum values measured when emitters were on (mostly used for testing)
   Serial.begin(9600);
   for (int i = 0; i < NUM_SENSORS; i++)
   {
@@ -34,7 +33,7 @@ void setup()
   }
   Serial.println();
 
-  // print the calibration maximum values measured when emitters were on
+  // print the calibration maximum values measured when emitters were on (mostly used for testing)
   for (int i = 0; i < NUM_SENSORS; i++)
   {
     Serial.print(qtrrc.calibratedMaximumOn[i]);
@@ -44,18 +43,18 @@ void setup()
   Serial.println();
   delay(1000);
 
-digitalWrite(M1, HIGH);
-digitalWrite(M2, HIGH);
+  //move robot forward and begin loop
+  digitalWrite(M1, HIGH);
+  digitalWrite(M2, HIGH);
 }
-
-
-int lastError = 0;
 
 
 
 
 void loop()
 {
+  int lastError;
+
   // read calibrated sensor values and obtain a measure of the line position from 0 to 5000
   unsigned int position = qtrrc.readLine(sensorValues);
 
@@ -66,7 +65,7 @@ void loop()
 
   delay(250);
 
-  // set the motor speed based on proportional and derivative PID terms
+  // set the motor speed based on proportional and derivative PID terms (experimentally determined)
   // KP is the a floating-point proportional constant
   // KD is the floating-point derivative constant
 
